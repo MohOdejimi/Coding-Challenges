@@ -11,6 +11,9 @@ type Lexer struct {
 	ch byte
 }
 
+
+var SeenKey bool
+
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
@@ -34,7 +37,16 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
-func (l *Lexer) NextToken() token.Token {
+func (l *Lexer) readString() string{
+	str := ""
+	for l.ch != '"' {
+		str += string(l.ch)
+		l.readChar()
+	}
+	return str
+}
+
+func (l *Lexer) NextToken() (token.Token) {
 	var tok token.Token	
 		
 	l.skipWhitespace()
@@ -48,6 +60,19 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tok = token.Token{Type: token.EOF, Literal: ""}
 		return tok
+	case '"':	
+		l.readChar()
+		str := l.readString()
+		tok =  token.Token{
+			Type: token.STRING,
+			Literal : str,
+		} 
+		SeenKey = true
+	case ':':
+		tok = token.Token{
+			Type: token.COLON,
+			Literal: string(l.ch),
+		}		
 	default:	
 		tok = token.Token{Type: token.ILLEGAL, Literal: string(l.ch)}		
 	}				

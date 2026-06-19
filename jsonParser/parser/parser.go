@@ -30,26 +30,56 @@ func (p *Parser) nextToken() {
 }
 
 func (p *Parser) parseObject() error {
-	currentToken := p.currentToken
+	openingToken := p.currentToken 
 
-	if currentToken.Type != token.LEFT_BRACE {
-		return fmt.Errorf("Current Token is not {")
-	} 
+	if openingToken.Type != token.LEFT_BRACE {
+		return fmt.Errorf("Opening Token is not {")
+	}
 
 	p.nextToken()
 
-	currentToken = p.currentToken
+	currentToken := p.currentToken
 
-	if currentToken.Type !=  token.RIGHT_BRACE {
-		return fmt.Errorf("Current Token is not Valid")
+	if currentToken.Type == token.RIGHT_BRACE {
+		return nil
+	}
+
+	if currentToken.Type != token.STRING {
+		return fmt.Errorf("Current Token is not a string")
+	}
+
+	p.nextToken()
+
+	currentToken = p.currentToken 
+
+	if currentToken.Type != token.COLON {
+		return fmt.Errorf("Current token is %v not : which is the expected", currentToken.Literal)
+	}
+
+	p.nextToken()
+
+	currentToken = p.currentToken 
+
+	if currentToken.Type != token.STRING {
+		return fmt.Errorf("Current Token is not a string")
+	}
+
+	p.nextToken()
+
+	currentToken =  p.currentToken
+
+	if currentToken.Type != token.RIGHT_BRACE {
+		return fmt.Errorf("Closing Token is not }")
 	}
 
 	return nil 
 }
 
 func (p *Parser) Parse() error{
-	err := p.parseObject()
+	var err error
 
+	err = p.parseObject()
+	
 	if err != nil {
 		return err
 	}

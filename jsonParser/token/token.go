@@ -8,6 +8,8 @@ const (
 	RIGHT_BRACE TokenType = "RIGHT_BRACE"
 	EOF TokenType = "EOF"
 	ILLEGAL TokenType = "ILLEGAL"
+	STRING TokenType = "STRING"
+	COLON TokenType = "COLON"
 )
 
 type Token struct {

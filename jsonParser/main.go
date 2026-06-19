@@ -26,7 +26,7 @@ func main() {
 	result := parser.Parse()
 
 	if result != nil {
-		fmt.Println(result.Error())
+		fmt.Println("Invalid")
 		os.Exit(1)
 	} else {
 		fmt.Println("Valid")
