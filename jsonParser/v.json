@@ -1,5 +1,12 @@
 {
-  "key": "value",
-  "key-n": "101",
-  "key3": false
+  "key1": true,
+  "key2": false,
+  "key3": null,
+  "key4": "value",
+  "key5": 101,
+  "key6": {"key": {"key": "value"}},
+  "key-o": {
+    "inner key": "inner value"
+  },
+  "key-8": ["adam", {"inner key": "inner value",   "key5": 101}]
 }

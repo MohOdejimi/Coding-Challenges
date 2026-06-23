@@ -76,6 +76,19 @@ func (l *Lexer) readNull() bool {
 	return true
 }
 
+func (l *Lexer) isNum() bool {
+	return l.ch >= '0' && l.ch <= '9'
+}
+
+func (l *Lexer) readNum() string {
+	num := ""
+	for l.isNum() {
+		num += string(l.ch)
+		l.readChar()
+	}
+	return num
+}
+
 
 func (l *Lexer) NextToken() (token.Token) {
 	var tok token.Token	
@@ -93,7 +106,17 @@ func (l *Lexer) NextToken() (token.Token) {
 		tok = token.Token{
 			Type: token.RIGHT_BRACE,
 			Literal: string(l.ch),
-		}	
+		}
+	case '[': 
+		tok =  token.Token{
+			Type: token.LEFT_BRACKET,
+			Literal: string(l.ch),
+		}
+	case ']': 
+		tok = token.Token{
+			Type: token.RIGHT_BRACKET,
+			Literal: string(l.ch),
+		}			
 	case 0:
 		tok = token.Token{
 			Type: token.EOF,
@@ -160,6 +183,14 @@ func (l *Lexer) NextToken() (token.Token) {
 			}
 			return tok 
 	default:	
+		num := l.readNum() 
+		if num != "" {
+			tok = token.Token{
+				Type: token.NUMBER,
+				Literal: num,
+			}
+			return tok
+		}
 		tok = token.Token{
 			Type: token.ILLEGAL, 
 			Literal: string(l.ch),
