@@ -5,49 +5,13 @@ import (
 	"os"
 	"bufio"
 	"container/heap"
+
+	"compressionTool/huffman"
+	"compressionTool/minheap"
+	"compressionTool/traversal"
 )
 
 
-type TreeNode struct {
-	Freq int
-	Char rune
-	Right *TreeNode
-	Left *TreeNode
-}
-
-type MinHeap []*TreeNode 
-
-func (mh MinHeap) Len() int {
-		return len(mh)
-}
-
-func (mh MinHeap) Less(i, j int) bool {
-	return mh[i].Freq < mh[j].Freq
-}
-
-func (mh MinHeap) Swap(i, j int) {
-	mh[i], mh[j] = mh[j], mh[i]
-}
-
-func (mh *MinHeap) Push(x any) {
-	*mh = append(*mh, x.(*TreeNode))
-}
-
-func (mh *MinHeap) Pop() any {
-	currentHeap := *mh 
-	n := len(currentHeap) 
-
-	if n == 0 {
-		return nil
-	}
-
-	poppedElement := currentHeap[n - 1]
-	*mh =  currentHeap[:n-1]
-	return poppedElement
-}
-
-
-	
 func main() {
 	args := os.Args[1:]
 	filepath := args[0]
@@ -81,27 +45,30 @@ func main() {
 		}
 	}
 
-	mh := MinHeap{}
+	mh := minheap.MinHeap{}
 
 	for ch, freq := range characterCount {
-		node := &TreeNode{
+		node := &minheap.TreeNode{
 			Freq: freq,
 			Char: ch,
 		}
 		heap.Push(&mh, node)
 	}
 
-	
+	root := huffman.HuffManImplementation(mh)
+
+	rootStackDeets := &traversal.Stack{
+		Node: root,
+		CurrentCode: "",
+	}
+
+	var codes = make(map[rune]string)
+
+	traversal.StckSlice = append(traversal.StckSlice, rootStackDeets)
+	traversal.PreOrderTraversal(traversal.StckSlice, codes)
+
+	for ch, code := range codes {
+		fmt.Printf("%c: %s\n", ch, code)
+	}
 }
 
-
-
-
-	// Steps 
-
-	// 1. Sort the data by frequency 
-	// 2. Choose the two smallest two numbers 
-	// 3. Merge them(a new number) to form a tree and reorder the list. 
-	// 4. Choose the two smallest number
-	// 5. Merge them to form a tree and reorder the list.
-	// 6. 
